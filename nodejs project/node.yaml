@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-api-deployment
+  labels:
+    app: node-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-api
+  template:
+    metadata:
+      labels:
+        app: node-api
+    spec:
+      containers:
+        - name: node-api
+          image: kadircftc0/node-mongo-api:1.3
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-root-username
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo-root-password
+            - name: MONGO_HOST
+              value: "mongodb-service" # MongoDB Service adı
+            - name: MONGO_PORT
+              value: "27017" # MongoDB portu
+            - name: MONGO_DB
+              value: "users" # Veritabanı adı
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-api-service
+spec:
+  selector:
+    app: node-api
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 32000
