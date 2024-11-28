@@ -4,17 +4,14 @@ const mongoose = require("mongoose");
 const app = express();
 const PORT = 3000;
 
-// JSON verileri almak için middleware
 app.use(express.json());
 
-// MongoDB bağlantısı için ortam değişkenleri kullanma
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
 const MONGO_HOST = 'mongodb-service';
 const MONGO_PORT = 27017;
 const MONGO_DB = 'users';
 
-// MongoDB bağlantı URI'si
 const mongoUri = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
 console.log(mongoUri);
 
@@ -22,7 +19,6 @@ mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB'ye bağlanıldı."))
   .catch(err => console.error("MongoDB bağlantı hatası:", err));
 
-// Kullanıcı şeması ve modeli
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -30,8 +26,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-// API endpoint'leri
-// Kullanıcı eklemek için POST isteği
 app.post("/users", async (req, res) => {
   try {
     const user = new User(req.body);
@@ -43,7 +37,6 @@ app.post("/users", async (req, res) => {
   }
 });
 
-// Kullanıcıları listelemek için GET isteği
 app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -54,7 +47,6 @@ app.get("/users", async (req, res) => {
   }
 });
 
-// Sunucuyu başlatma
 app.listen(PORT, () => {
   console.log(`Sunucu ${PORT} portunda çalışıyor.`);
 });
