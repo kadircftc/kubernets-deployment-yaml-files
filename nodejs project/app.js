@@ -1,3 +1,4 @@
+//!!Bu kod sadece kubernetes testi amaçlı yalın halde yazılmıştır.  
 const express = require("express");
 const mongoose = require("mongoose");
 
